@@ -7,4 +7,5 @@ matplotlib
 seaborn
 plotly
 scipy
-scikit-learn
+shap
+openpyxl

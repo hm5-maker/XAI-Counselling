@@ -61,14 +61,19 @@ if st.button("Predict Admission"):
 
     shap_values = explainer(user_df)
 
-    # Explanation plot
-    st.subheader("🔍 SHAP Explanation (Waterfall Plot)")
-    fig = shap.plots.waterfall(shap.Explanation(
+    # Explanation object (fix for multi-class)
+    explanation = shap.Explanation(
         values=shap_values.values[0, 1] if shap_values.values.ndim == 3 else shap_values.values[0],
         base_values=shap_values.base_values[0, 1] if hasattr(shap_values.base_values[0], '__len__') else shap_values.base_values[0],
         data=user_df.values[0],
         feature_names=user_df.columns
-    ), show=False)
+    )
+
+    # Plot SHAP Waterfall using matplotlib-compatible method
+    st.subheader("🔍 SHAP Explanation (Waterfall Plot)")
+    plt.figure(figsize=(10, 6))
+    shap.plots.waterfall(explanation, show=False)
+    fig = plt.gcf()
     st.pyplot(fig)
 
     st.caption("Feature impacts are shown in red (negative) and blue (positive). Higher blue = more likely to be admitted.")
